@@ -3,8 +3,9 @@ package org.example;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
+import java.sql.SQLOutput;
+import java.util.List;
 import java.util.Scanner;
 
 public class main {
@@ -74,13 +75,49 @@ public class main {
                     System.out.println("Digite sua senha: ");
                     senha = sc.nextLine();
 
-                    User user2 = new User(0, nome, email, login, senha, false);
+                    user = new User(0, nome, email, login, senha, false);
 
-                    userDAO.salvar(user2);
+                    userDAO.salvar(user);
 
                     System.out.println("Salvo com sucesso!");
 
                     break;
+                case 3:
+                    if (user.getAdministrador()==false){
+                        System.out.println("Você não tem permissão para executar este comando!");
+                    }else{
+
+                        //FAZER FUNÇÃO LISTAR
+
+                        for(User u: userDAO.listar()){
+                            System.out.println("\nID: " + u.getId());
+                            System.out.println("Nome: " + u.getNome());
+                            System.out.println("E-mail: " + u.getEmail());
+                            System.out.println("ADM: " + u.getAdministrador());
+                        }
+
+                    }
+
+                    break;
+
+                case 4:
+                    if (user.getAdministrador()==false){
+                        System.out.println("Você não tem permissão para executar este comando!");
+                    }else{
+
+                        for(User u: userDAO.listar()){
+                            System.out.println("\nID: " + u.getId());
+                            System.out.println("Nome: " + u.getNome());
+                            System.out.println("E-mail: " + u.getEmail());
+                            System.out.println("ADM: " + u.getAdministrador());
+                        }
+
+                        System.out.println("Qual usuário deseja excluir? ");
+                        int id = sc.nextInt();
+
+                        userDAO.excluir(id);
+
+                    }
 
 
             }

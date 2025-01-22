@@ -1,9 +1,7 @@
 package org.example;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
+import javax.persistence.*;
+import java.util.List;
 
 public class UserDAO {
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("exemplo-jpa");
@@ -33,20 +31,21 @@ public class UserDAO {
 
     }
 
-    public void excluir(int id){
-
-        User user = buscar(id);
-
-        if (user != null){
-            em.remove(user);
-        }
-
-    }
-
     public User buscar(int id){
         User user = em.find(User.class,id);
         return user;
     }
+
+    public void excluir(int id){
+
+        User user = buscar(id);
+
+            em.remove(user);
+
+    }
+
+
+
 
     public User Login(String login, String senha){
         try {
@@ -70,6 +69,22 @@ public class UserDAO {
             e.printStackTrace();
             return null;
         }
+
+    }
+
+    public List<User> listar(){
+
+        List<User> users = null;
+
+        try{
+
+            users = em.createQuery("from User u").getResultList();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return users;
 
     }
 
