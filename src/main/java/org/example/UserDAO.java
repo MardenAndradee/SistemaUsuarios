@@ -23,10 +23,17 @@ public class UserDAO {
 
     }
 
-    public void merge(User user){
+    public void editar(int id,String nome, String email, String login, String senha){
+
+        User user = em.find(User.class, id);
 
         em.getTransaction().begin();
-        em.persist(user);
+
+        user.setNome(nome);
+        user.setEmail(email);
+        user.setLogin(login);
+        user.setSenha(senha);
+
         em.getTransaction().commit();
 
     }
@@ -38,9 +45,11 @@ public class UserDAO {
 
     public void excluir(int id){
 
-        User user = buscar(id);
+        User user = em.find(User.class,id);
 
-            em.remove(user);
+        em.getTransaction().begin();
+        em.remove(user);
+        em.getTransaction().commit();
 
     }
 
