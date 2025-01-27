@@ -4,8 +4,6 @@ package org.example;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import java.sql.SQLOutput;
-import java.util.List;
 import java.util.Scanner;
 
 public class main {
@@ -18,7 +16,8 @@ public class main {
 
         UserDAO userDAO = new UserDAO(em);
         User user = null;
-
+        AnimalDAO animalDAO = new AnimalDAO(em);
+        Animal animal = null;
 
         do {
 
@@ -79,9 +78,11 @@ public class main {
 
                     System.out.println("""
                             \nPortal Admin
-                            1-Editar
-                            2-Visualizar usuários
-                            3-Excluir
+                            1-Editar Cadastro
+                            2-Cadastrar animal
+                            3-Visualizar meus animais
+                            4-Visualizar usuários
+                            5-Excluir usuário
                             9-Voltar
                             
                             """);
@@ -91,8 +92,10 @@ public class main {
                 } else {
                     System.out.println("""
                             \nPortal Usuário
-                            1-editar
-                            9-Sair
+                            1-Editar Cadastro
+                            2-Cadastrar animal
+                            3-Visualizar meus animais
+                            9-Voltar
                             
                             """);
                 }
@@ -116,12 +119,6 @@ public class main {
                         System.out.println("Digite sua senha: ");
                         String senha = sc.nextLine();
 
-                        Boolean administrador;
-                        if(user.getAdministrador()==true){
-                            administrador = true;
-                        }else{
-                            administrador = false;
-                        }
 
 
                         userDAO.editar(user.getId(), nome, email, login, senha);
@@ -129,7 +126,43 @@ public class main {
                         System.out.println("Salvo com sucesso!");
 
                         break;
+
                     case 2:
+                        //cadastrar animal
+
+                        System.out.println("Digite o nome do animal: ");
+                        sc.nextLine();
+                        String nomeAnimal = sc.nextLine();
+
+                        System.out.println("Digite a espécie do animal: ");
+                        String especie = sc.nextLine();
+
+                        System.out.println("Digite a idade do animal: ");
+                        int idadeAnimal = sc.nextInt();
+
+                        animal = new Animal(0, user.getId(), nomeAnimal, especie, idadeAnimal);
+
+                        animalDAO.salvarAnimal(animal);
+
+                        System.out.println("Salvo!");
+
+
+                        break;
+                    case 3:
+                        //visualizar animais deste usuário
+
+                        int id_usuario = user.getId();
+
+                        System.out.println("\nSeus animais");
+
+                        for(Animal a: animalDAO.listarAnimalUsuario(id_usuario)) {
+                            System.out.println("\nNome: " + a.getNome());
+                            System.out.println("Especie: " + a.getEspecie());
+                            System.out.println("Idade: " + a.getIdade());
+                        }
+
+                        break;
+                    case 4:
                         if (user.getAdministrador()==false){
                             System.out.println("Você não tem permissão para executar este comando!");
                         }else{
@@ -147,7 +180,7 @@ public class main {
 
                         break;
 
-                    case 3:
+                    case 5:
                         if (user.getAdministrador()==false){
                             System.out.println("Você não tem permissão para executar este comando!");
                         }else{
@@ -159,7 +192,7 @@ public class main {
                                 System.out.println("ADM: " + u.getAdministrador());
                             }
 
-                            System.out.println("Qual usuário deseja excluir? ");
+                            System.out.println("\nQual usuário deseja excluir? ");
                             int id = sc.nextInt();
 
                             userDAO.excluir(id);
